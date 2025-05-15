@@ -1,18 +1,21 @@
 from fastapi import FastAPI
-from os import listdir
-from os.path import isfile, join
 import glob
 
-app = FastAPI()
+from Constants import Constants
 
+app = FastAPI()
+sensorNames = None
 @app.get('/')
 def hello():
     return {"Hello": "World"}
 
 @app.get('/gettemperatures')
 def getTemperatures():
-    mypath = "/var/www/html/data"
-    #onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+    mypath = Constants.datafolder
+    sensorNames = glob.glob(mypath+"/*.data")
+    return {"sensors.count": len(sensorNames)}
 
-    onlyfiles = glob.glob(mypath+"/*.data")
-    return {"sensors.count": len(onlyfiles)}
+@app.get('/cputemp')
+def getSensorValue():
+    file = open(sensorNames[0])
+    return {"cputemp.value": file.read()}
