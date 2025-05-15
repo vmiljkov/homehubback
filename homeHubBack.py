@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from os import listdir
 from os.path import isfile, join
-
+import glob
 
 app = FastAPI()
 
@@ -12,5 +12,7 @@ def hello():
 @app.get('/gettemperatures')
 def getTemperatures():
     mypath = "/var/www/html/data"
-    onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+    #onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+
+    onlyfiles = glob.glob(mypath+"/*.data")
     return {"sensors.count": len(onlyfiles)}
